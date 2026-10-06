@@ -175,7 +175,8 @@ function planWeek(o){
   for(i=0;i<7;i++){kind[i]="";dep[i]=false;}
   if(o.dep){dep[1]=true;dep[2]=true;}
   if(o.mer)kind[2]="v";
-  if(o.ven)kind[4]="v";
+  if(o.ven===1)kind[4]="v";
+  if(o.ven===2)dep[4]=true;
   if(o.match>=0)kind[o.match]="m";
   function jump(d){return d>=0&&d<7&&kind[d]!=="";}
   function score(a){
@@ -202,7 +203,7 @@ function planWeek(o){
       cur[d]=x;rec(d+1,used);if(x)used[x]=0;}
   })(0,{});
   var out=[],done={};
-  for(i=0;i<7;i++){var x=best[i],r={day:DAYS[i],s:x,kind:kind[i],dep:dep[i],note:""};
+  for(i=0;i<7;i++){var x=best[i],r={day:DAYS[i],s:x,kind:kind[i],dep:dep[i],ind:i===4&&o.ven===2&&!kind[i],note:""};
     if(x){done[x]=1;
       if(x==="ja"&&jump(i+1))r.note="Version allégée: 2 séries par exercice.";
       else if(x[0]==="h"&&jump(i+1))r.note="Garde 2 reps en réserve sur les épaules et les développés.";}
@@ -216,12 +217,13 @@ function seg(name,val,list){return '<div class="seg" role="group">'+list.map(fun
 function planHTML(){
   var o=st.plan,p=planWeek(o),yn=[[1,"Oui"],[0,"Non"]],n=4-p.missing.length;
   var h='<div><h1>Ma semaine</h1><p class="meta">Du lundi au dimanche. Réponds aux 4 questions, le planning se met à jour.</p></div>';
-  h+='<div class="box q"><h2>Match cette semaine</h2>'+seg("match",o.match,[[-1,"Non"],[0,"Lun"],[1,"Mar"],[2,"Mer"],[3,"Jeu"],[4,"Ven"]])+'<h2>Volley le mercredi</h2>'+seg("mer",o.mer?1:0,yn)+'<h2>Volley le vendredi</h2>'+seg("ven",o.ven?1:0,yn)+'<h2>Déplacement mardi et mercredi</h2>'+seg("dep",o.dep?1:0,yn)+'</div>';
+  h+='<div class="box q"><h2>Match cette semaine</h2>'+seg("match",o.match,[[-1,"Non"],[0,"Lun"],[1,"Mar"],[2,"Mer"],[3,"Jeu"],[4,"Ven"]])+'<h2>Volley le mercredi</h2>'+seg("mer",o.mer?1:0,yn)+'<h2>Vendredi</h2>'+seg("ven",o.ven,[[1,"Volley"],[0,"Libre"],[2,"Indispo"]])+'<h2>Déplacement mardi et mercredi</h2>'+seg("dep",o.dep?1:0,yn)+'</div>';
   h+='<ol class="week">'+p.days.map(function(r){
     var lab,cls;
     if(r.s){lab='<button type="button" class="lnk" data-tab="'+r.s+'">'+NAMES[r.s]+'</button>';cls="gym";}
     else if(r.kind==="m"){lab="Match";cls="jump";}
     else if(r.kind==="v"){lab="Volley";cls="jump";}
+    else if(r.ind){lab="Indisponible";cls="off";}
     else if(r.dep){lab="Déplacement";cls="off";}
     else{lab="Repos";cls="off";}
     return '<li class="'+cls+'"><span class="d">'+r.day+'</span><span class="w"><b>'+lab+'</b>'+(r.note?'<small>'+r.note+'</small>':'')+'</span></li>';}).join("")+'</ol>';
@@ -230,8 +232,8 @@ function planHTML(){
 }
 
 var today=new Date().toISOString().slice(0,10);
-var st={tab:"ja",debut:false,day:today,done:{},kg:{},plan:{v:2,match:-1,mer:false,ven:true,dep:false}},open=null;
-try{var sv=JSON.parse(localStorage.getItem("salle")||"null");if(sv){st.tab=sv.tab||st.tab;st.debut=!!sv.debut;if(sv.kg)st.kg=sv.kg;if(sv.plan&&sv.plan.v===2)st.plan=sv.plan;if(sv.day===today&&sv.done)st.done=sv.done;}}catch(e){}
+var st={tab:"ja",debut:false,day:today,done:{},kg:{},plan:{v:3,match:-1,mer:false,ven:1,dep:false}},open=null;
+try{var sv=JSON.parse(localStorage.getItem("salle")||"null");if(sv){st.tab=sv.tab||st.tab;st.debut=!!sv.debut;if(sv.kg)st.kg=sv.kg;if(sv.plan&&sv.plan.v===3)st.plan=sv.plan;if(sv.day===today&&sv.done)st.done=sv.done;}}catch(e){}
 if(location.hash==="#semaine")st.tab="plan";
 function save(){try{localStorage.setItem("salle",JSON.stringify(st));}catch(e){}}
 function esc(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");}
@@ -284,7 +286,7 @@ function hide(){clearInterval(iv);document.getElementById("timer").hidden=true;}
 
 document.addEventListener("click",function(ev){
   var t=ev.target.closest("button");if(!t)return;
-  if(t.dataset.plan){var pk=t.dataset.plan,pv=+t.dataset.val;st.plan[pk]=pk==="match"?pv:!!pv;save();render();return;}
+  if(t.dataset.plan){var pk=t.dataset.plan,pv=+t.dataset.val;st.plan[pk]=(pk==="match"||pk==="ven")?pv:!!pv;save();render();return;}
   if(t.dataset.tab){st.tab=t.dataset.tab;open=null;save();hide();render();window.scrollTo(0,0);return;}
   if(t.dataset.open){open=open===t.dataset.open?null:t.dataset.open;render();return;}
   if(t.dataset.kg){

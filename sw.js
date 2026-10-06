@@ -1,6 +1,6 @@
 // Service worker: met toute l'app en cache pour qu'elle marche hors ligne à la salle.
 // Change VERSION à chaque déploiement pour forcer la mise à jour du cache.
-const VERSION = "salle-v3";
+const VERSION = "salle-v4";
 const CORE = [
  "./",
  "index.html",
