@@ -34,6 +34,10 @@ Après une modification, change `VERSION` dans `sw.js` (par exemple `salle-v2`) 
 
 Les séances sont dans le tableau `S` de `index.html`. Chaque exercice : `n` nom, `s` séries, `r` répétitions, `rir` reps en réserve, `rest` repos en secondes, `cue` consigne, `alt` alternative, `d` nom des photos dans `img/`, `db: 1` pour un exercice aux haltères (cran de 2 kg au lieu de 2,5).
 
+## Planning de la semaine
+
+L'onglet Semaine pose 4 questions (match, volley mercredi, volley vendredi, déplacement) et calcule le planning. La fonction `planWeek` de `index.html` teste tous les placements des 4 séances sur les jours libres et garde le mieux noté. Les règles sont les pénalités de la fonction `score` : pas de jambes la veille d'un match, jambes la veille d'un volley fortement pénalisées, pas deux séances du même type deux jours de suite.
+
 ## Données
 
 Charges, séries cochées et onglet courant sont stockés dans le `localStorage` du téléphone, sous la clé `salle`. Ils sont liés au domaine : si l'URL change, on repart de zéro.
