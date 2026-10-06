@@ -32,7 +32,8 @@
 body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.4;margin:0}
 .wrap{max-width:640px;margin:0 auto;padding-inline:16px;padding-block:0 140px;display:flex;flex-direction:column;gap:18px}
 header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:10px 8px;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid var(--line)}
-.tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.tabs .wide{grid-column:span 2}
 .tabs button{font:700 17px/1 var(--display);letter-spacing:.02em;text-transform:uppercase;padding:13px 2px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--fg);cursor:pointer}
 .tabs button[aria-selected="true"]{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
 button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--rest);outline-offset:2px}
@@ -101,6 +102,36 @@ ol.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .week .off b{color:var(--muted);font-weight:600}
 .week .jump b{color:var(--rest)}
 .week .lnk{padding:0;border:0;background:none;font:inherit;text-transform:inherit;color:var(--accent);text-decoration:underline;text-underline-offset:4px;cursor:pointer;text-align:left}
+.box ol{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:6px}
+.box>*+ul,.box>*+ol,.box>ul+p,.box>ol+p,.box>ol+ul{margin-top:10px}
+.fine{font-size:14px;color:var(--muted)}
+.box p.fine{margin-top:6px}
+.rec h3{font:700 27px/1.05 var(--display);text-transform:uppercase;margin:0;text-wrap:balance}
+.scroll{overflow-x:auto}
+.tbl{width:100%;border-collapse:collapse;font-size:16px;font-variant-numeric:tabular-nums}
+.tbl th{font:700 14px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;padding:0 0 8px}
+.tbl td{padding:9px 0;border-top:1px solid var(--line);vertical-align:top}
+.tbl td b{display:block;font:700 17px/1.1 var(--display);text-transform:uppercase}
+.tbl th+th,.tbl td+td{text-align:right;white-space:nowrap;padding-left:12px}
+.tbl tfoot td{font:700 20px/1 var(--display);border-top:2px solid var(--fg)}
+.grp{font:700 15px/1 var(--display);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:16px 0 8px}
+.box ul.shop{list-style:none;padding:0;gap:6px;margin-top:0}
+.shop button{width:100%;text-align:left;padding:12px;border:2px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg);font:500 16px/1.25 var(--body);cursor:pointer}
+.shop button[aria-pressed="true"]{background:var(--done-bg);border-color:var(--done);color:var(--done);text-decoration:line-through}
+#shopreset{margin-top:14px}
+.accs{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.box.acc{padding:0}
+.acc summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 14px;font:700 23px/1.1 var(--display);text-transform:uppercase}
+.acc summary::-webkit-details-marker{display:none}
+.acc summary::after{content:"+";flex:none;font:700 28px/1 var(--display);color:var(--accent)}
+.acc[open]>summary::after{content:"\2212"}
+.acc[open]>summary{border-bottom:1px solid var(--line)}
+.acc summary small{display:block;margin-top:4px;font:600 13px/1.2 var(--body);text-transform:none;color:var(--muted)}
+.acc summary:focus-visible{outline:3px solid var(--rest);outline-offset:-3px}
+.acc .in{padding:14px;display:flex;flex-direction:column;gap:12px}
+.acc .in>*{margin-top:0;margin-bottom:0}
+.acc .in .grp{margin-top:6px}
+.acc .in ul:not(.shop),.acc .in ol{gap:7px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
 </style>
 </head>
@@ -121,6 +152,175 @@ ol.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
     <button type="button" id="stop">Stop</button>
   </div>
 </div>
+
+<template id="diet">
+<div><h1>Repas</h1><p class="meta">Prise de masse: 3 200 à 3 600 kcal et 150 à 160 g de protéines par jour.</p></div>
+
+<div class="accs">
+
+<details class="box acc" data-acc="a1"><summary><span class="st">Ma journée type</span></summary><div class="in">
+<div class="scroll"><table class="tbl">
+<thead><tr><th>Repas</th><th>kcal</th><th>Prot.</th></tr></thead>
+<tbody>
+<tr><td><b>Matin</b> Shake maison</td><td>965</td><td>55 g</td></tr>
+<tr><td><b>Midi</b> Boîte du batch</td><td>820</td><td>45 g</td></tr>
+<tr><td><b>Goûter</b> 250 g fromage blanc entier, 50 g muesli, miel</td><td>420</td><td>22 g</td></tr>
+<tr><td><b>Soir</b> Boîte du batch</td><td>820</td><td>45 g</td></tr>
+<tr><td><b>Collation</b> Poignée de cacahuètes et un fruit, ou 2 tartines au beurre de cacahuète</td><td>280</td><td>8 g</td></tr>
+</tbody>
+<tfoot><tr><td>Total</td><td>3 300</td><td>175 g</td></tr></tfoot>
+</table></div>
+<p class="fine">Valeurs approximatives. C'est la balance qui tranche.</p>
+</div></details>
+
+<details class="box acc" data-acc="a2"><summary><span class="st">Selon le jour</span></summary><div class="in">
+<ul>
+<li><b>Jour de salle:</b> 1 cuillère à soupe d'huile d'olive en plus dans chaque boîte.</li>
+<li><b>Jour de volley ou de match:</b> un deuxième shake, 2 h avant (400 ml de lait, 60 g d'avoine, 1 banane, 1 cuillère de beurre de cacahuète), environ 680 kcal.</li>
+<li><b>Jour libre:</b> garde le shake du matin, puis mange ce que tu veux.</li>
+<li><b>Déplacement:</b> 2 doses sèches (avoine et whey) dans un shaker, des cacahuètes dans le sac. Au restaurant, plat avec féculents et viande, pain et dessert.</li>
+</ul>
+</div></details>
+
+<details class="box acc" data-acc="a3"><summary><span class="st">Shake du matin<small>Recette</small></span></summary><div class="in">
+<p class="fine">2 min au blender · environ 965 kcal · 55 g de protéines</p>
+<ul>
+<li>400 ml de lait entier</li>
+<li>80 g de flocons d'avoine</li>
+<li>1 banane</li>
+<li>2 cuillères à soupe de beurre de cacahuète</li>
+<li>30 g de whey</li>
+</ul>
+<p>Mixe l'avoine seule quelques secondes d'abord, le shake sera plus lisse. Sans whey: remplace par 150 g de fromage blanc.</p>
+</div></details>
+
+<details class="box acc" data-acc="a4"><summary><span class="st">Le batch du dimanche</span></summary><div class="in">
+<p>12 boîtes en 1 h à 1 h 15, les deux recettes en parallèle.</p>
+<ol>
+<li>Lance l'eau des pâtes et le riz.</li>
+<li>Fais dorer le poulet dans une marmite, le bœuf dans une autre.</li>
+<li>Ajoute les sauces et laisse mijoter pendant que les féculents cuisent.</li>
+<li>Légumes surgelés dans les sauces pour les 5 à 8 dernières minutes.</li>
+<li>Répartis: féculent, viande en sauce, légumes. Laisse tiédir avant de fermer.</li>
+</ol>
+<ul>
+<li><b>6 boîtes au frigo</b> pour lundi, mardi, mercredi.</li>
+<li><b>6 boîtes au congélateur</b> pour jeudi, vendredi, samedi. Sors-les la veille au soir.</li>
+<li><b>Semaine de déplacement:</b> 9 boîtes suffisent.</li>
+</ul>
+</div></details>
+
+<details class="box acc" data-acc="a5"><summary><span class="st">Poulet curry coco et riz<small>Recette A · 6 boîtes</small></span></summary><div class="in">
+<p class="fine">Environ 820 kcal et 45 g de protéines par boîte</p>
+<ul>
+<li>1,2 kg de hauts de cuisse de poulet désossés</li>
+<li>720 g de riz cru</li>
+<li>400 ml de lait de coco</li>
+<li>2 à 3 cuillères à soupe de pâte de curry</li>
+<li>2 oignons, 2 gousses d'ail</li>
+<li>1,2 kg de haricots verts ou d'épinards surgelés</li>
+<li>2 cuillères à soupe d'huile d'olive, sel</li>
+</ul>
+<ol>
+<li>Cuis le riz dans 1,4 L d'eau salée, à couvert, 12 à 15 min.</li>
+<li>Coupe le poulet en morceaux. Fais-le dorer 5 à 6 min à feu vif dans l'huile.</li>
+<li>Ajoute les oignons émincés, l'ail et la pâte de curry. Remue 2 min.</li>
+<li>Verse le lait de coco et 200 ml d'eau. Laisse mijoter 15 min à feu moyen.</li>
+<li>Ajoute les légumes surgelés, 5 à 8 min. Goûte et sale.</li>
+<li>Par boîte: un sixième du riz, un sixième du poulet et de sa sauce.</li>
+</ol>
+</div></details>
+
+<details class="box acc" data-acc="a6"><summary><span class="st">Bolognaise et pâtes<small>Recette B · 6 boîtes</small></span></summary><div class="in">
+<p class="fine">Environ 820 kcal et 45 g de protéines par boîte</p>
+<ul>
+<li>1,2 kg de bœuf haché à 15 % (les steaks hachés surgelés conviennent)</li>
+<li>720 g de pâtes crues</li>
+<li>3 briques de coulis de tomate (1,5 kg)</li>
+<li>2 oignons, 2 gousses d'ail, herbes de Provence</li>
+<li>1,2 kg de brocolis ou de légumes surgelés</li>
+<li>200 g d'emmental râpé</li>
+<li>1 cuillère à soupe d'huile d'olive, sel, poivre</li>
+</ul>
+<ol>
+<li>Fais revenir les oignons émincés et l'ail 3 min dans l'huile.</li>
+<li>Ajoute le bœuf. Émiette-le à la spatule et fais-le dorer 6 à 8 min.</li>
+<li>Verse le coulis, les herbes, sel et poivre. Laisse mijoter 20 min.</li>
+<li>Cuis les pâtes 1 min de moins que le temps du paquet: elles finiront de cuire au réchauffage.</li>
+<li>Ajoute les légumes surgelés dans la sauce pour les 5 à 8 dernières minutes.</li>
+<li>Par boîte: un sixième des pâtes, un sixième de la sauce, une poignée d'emmental.</li>
+</ol>
+</div></details>
+
+<details class="box acc" data-acc="a7"><summary><span class="st">Pour varier</span></summary><div class="in">
+<p>Garde la même base (1,2 kg de protéine, 720 g de féculent, légumes) et change la sauce:</p>
+<ul>
+<li>Chili con carne et riz</li>
+<li>Poulet teriyaki et riz</li>
+<li>Dinde à la moutarde et pâtes</li>
+<li>Porc au caramel et riz</li>
+</ul>
+<p>Ajoute du poisson gras une ou deux fois par semaine (sardines ou maquereau en boîte) et un fruit en plus de la banane.</p>
+</div></details>
+
+<details class="box acc" data-acc="a8"><summary><span class="st">Courses de la semaine<small>Carrefour</small></span></summary><div class="in">
+<p class="fine">Touche un article pour le cocher.</p>
+<h3 class="grp">Viande</h3>
+<ul class="shop">
+<li><button type="button" data-shop="v1">Hauts de cuisse de poulet désossés, 1,2 kg</button></li>
+<li><button type="button" data-shop="v2">Bœuf haché 15 %, 1,2 kg</button></li>
+</ul>
+<h3 class="grp">Frais</h3>
+<ul class="shop">
+<li><button type="button" data-shop="f1">Lait entier, 4 L</button></li>
+<li><button type="button" data-shop="f2">Fromage blanc entier, 2 kg</button></li>
+<li><button type="button" data-shop="f3">Emmental râpé, 200 g</button></li>
+</ul>
+<h3 class="grp">Féculents</h3>
+<ul class="shop">
+<li><button type="button" data-shop="c1">Riz, 720 g (paquet de 1 kg)</button></li>
+<li><button type="button" data-shop="c2">Pâtes, 720 g (paquet de 1 kg)</button></li>
+<li><button type="button" data-shop="c3">Flocons d'avoine, 650 g</button></li>
+<li><button type="button" data-shop="c4">Muesli croustillant, 350 g</button></li>
+<li><button type="button" data-shop="c5">Pain de mie complet, 1 paquet</button></li>
+</ul>
+<h3 class="grp">Épicerie</h3>
+<ul class="shop">
+<li><button type="button" data-shop="e1">Lait de coco, 400 ml</button></li>
+<li><button type="button" data-shop="e2">Coulis de tomate, 3 briques de 500 g</button></li>
+<li><button type="button" data-shop="e3">Beurre de cacahuète, 1 grand pot</button></li>
+<li><button type="button" data-shop="e4">Cacahuètes ou fruits secs, 200 g</button></li>
+</ul>
+<h3 class="grp">Fruits et légumes</h3>
+<ul class="shop">
+<li><button type="button" data-shop="l1">Bananes, 10 à 12</button></li>
+<li><button type="button" data-shop="l2">Oignons, 4</button></li>
+<li><button type="button" data-shop="l3">Légumes surgelés, 2,5 kg</button></li>
+</ul>
+<h3 class="grp">Seulement quand c'est fini</h3>
+<ul class="shop">
+<li><button type="button" data-shop="p1">Huile d'olive</button></li>
+<li><button type="button" data-shop="p2">Pâte de curry</button></li>
+<li><button type="button" data-shop="p3">Ail, herbes de Provence</button></li>
+<li><button type="button" data-shop="p4">Miel, sel, poivre</button></li>
+<li><button type="button" data-shop="p5">Whey (30 g par jour, environ 210 g par semaine)</button></li>
+</ul>
+<button type="button" class="reset" id="shopreset">Tout décocher</button>
+</div></details>
+
+<details class="box acc" data-acc="a9"><summary><span class="st">Suivi</span></summary><div class="in">
+<ul>
+<li>Pèse-toi au moins 3 matins par semaine et compare les moyennes d'une semaine à l'autre.</li>
+<li>Objectif: 1 à 1,5 kg par mois.</li>
+<li>Moins de 0,15 kg par semaine pendant 3 semaines: ajoute 200 kcal (une cuillère d'huile par boîte).</li>
+<li>Plus de 0,4 kg par semaine pendant 3 semaines: retire 200 à 300 kcal.</li>
+<li>Prends les versions entières, jamais allégées: lait entier, fromage blanc entier.</li>
+<li>Environ 3 L d'eau par jour, 7 à 9 h de sommeil.</li>
+</ul>
+</div></details>
+
+</div>
+</template>
 
 <script>
 function fig(key,name){
@@ -232,9 +432,10 @@ function planHTML(){
 }
 
 var today=new Date().toISOString().slice(0,10);
-var st={tab:"ja",debut:false,day:today,done:{},kg:{},plan:{v:3,match:-1,mer:false,ven:1,dep:false}},open=null;
-try{var sv=JSON.parse(localStorage.getItem("salle")||"null");if(sv){st.tab=sv.tab||st.tab;st.debut=!!sv.debut;if(sv.kg)st.kg=sv.kg;if(sv.plan&&sv.plan.v===3)st.plan=sv.plan;if(sv.day===today&&sv.done)st.done=sv.done;}}catch(e){}
+var st={tab:"ja",debut:false,day:today,done:{},kg:{},plan:{v:3,match:-1,mer:false,ven:1,dep:false},shop:{},acc:{a1:1}},open=null;
+try{var sv=JSON.parse(localStorage.getItem("salle")||"null");if(sv){st.tab=sv.tab||st.tab;st.debut=!!sv.debut;if(sv.kg)st.kg=sv.kg;if(sv.shop)st.shop=sv.shop;if(sv.acc)st.acc=sv.acc;if(sv.plan&&sv.plan.v===3)st.plan=sv.plan;if(sv.day===today&&sv.done)st.done=sv.done;}}catch(e){}
 if(location.hash==="#semaine")st.tab="plan";
+if(location.hash==="#repas")st.tab="diet";
 function save(){try{localStorage.setItem("salle",JSON.stringify(st));}catch(e){}}
 function esc(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");}
 function mmss(x){x=Math.max(0,Math.ceil(x));return Math.floor(x/60)+":"+("0"+x%60).slice(-2);}
@@ -246,9 +447,13 @@ function fr(v){return String(v).replace(".",",");}
 function render(){
   if(location.hash==="#schemas"){var g='<div class="grid">';S.forEach(function(s){s.ex.forEach(function(e){g+='<div class="fig"><b>'+esc(e.n)+'</b>'+fig(e.d,e.n)+'</div>';});});document.getElementById("main").innerHTML=g+'</div>';return;}
   var s=cur(),h="";
-  document.getElementById("tabs").innerHTML='<button type="button" role="tab" data-tab="plan" aria-selected="'+(st.tab==="plan")+'">Semaine</button>'+S.map(function(x){return '<button type="button" role="tab" data-tab="'+x.id+'" aria-selected="'+(x.id===st.tab)+'">'+esc(x.tab)+'</button>';}).join("");
+  document.getElementById("tabs").innerHTML='<button type="button" role="tab" class="wide" data-tab="plan" aria-selected="'+(st.tab==="plan")+'">Semaine</button><button type="button" role="tab" class="wide" data-tab="diet" aria-selected="'+(st.tab==="diet")+'">Repas</button>'+S.map(function(x){return '<button type="button" role="tab" data-tab="'+x.id+'" aria-selected="'+(x.id===st.tab)+'">'+esc(x.tab)+'</button>';}).join("");
   document.getElementById("debut").checked=st.debut;
+  document.getElementById("debut").parentNode.hidden=st.tab==="plan"||st.tab==="diet";
   if(st.tab==="plan"){document.getElementById("main").innerHTML=planHTML();return;}
+  if(st.tab==="diet"){var mn=document.getElementById("main");mn.innerHTML=document.getElementById("diet").innerHTML;
+    Array.prototype.forEach.call(mn.querySelectorAll("[data-shop]"),function(b){b.setAttribute("aria-pressed",!!st.shop[b.dataset.shop]);});
+    Array.prototype.forEach.call(mn.querySelectorAll("[data-acc]"),function(x){x.open=!!st.acc[x.dataset.acc];});return;}
   h+='<div><h1>'+esc(s.title)+'</h1><p class="meta">'+esc(s.day)+' · '+esc(s.dur)+'</p></div>';
   if(s.warn)h+='<div class="box warn">'+esc(s.warn)+'</div>';
   h+='<div class="box"><h2>Échauffement, 6 à 8 min</h2><ul>'+s.wu.map(function(w){return '<li>'+esc(w)+'</li>';}).join("")+'<li>Sur l\'exercice 1: 10 reps à moitié de ta charge, puis 5 reps aux trois quarts</li></ul></div>';
@@ -286,6 +491,8 @@ function hide(){clearInterval(iv);document.getElementById("timer").hidden=true;}
 
 document.addEventListener("click",function(ev){
   var t=ev.target.closest("button");if(!t)return;
+  if(t.dataset.shop){if(st.shop[t.dataset.shop])delete st.shop[t.dataset.shop];else st.shop[t.dataset.shop]=1;save();t.setAttribute("aria-pressed",!!st.shop[t.dataset.shop]);return;}
+  if(t.id==="shopreset"){st.shop={};save();render();return;}
   if(t.dataset.plan){var pk=t.dataset.plan,pv=+t.dataset.val;st.plan[pk]=(pk==="match"||pk==="ven")?pv:!!pv;save();render();return;}
   if(t.dataset.tab){st.tab=t.dataset.tab;open=null;save();hide();render();window.scrollTo(0,0);return;}
   if(t.dataset.open){open=open===t.dataset.open?null:t.dataset.open;render();return;}
@@ -313,6 +520,7 @@ document.addEventListener("input",function(ev){
   var key=cur().id+"-"+t.dataset.kgin,v=parseFloat(String(t.value).replace(",","."));
   if(isNaN(v))delete st.kg[key];else st.kg[key]=Math.max(0,v);save();
 });
+document.addEventListener("toggle",function(ev){var x=ev.target;if(x.dataset&&x.dataset.acc){st.acc[x.dataset.acc]=x.open?1:0;save();}},true);
 document.getElementById("debut").addEventListener("change",function(ev){st.debut=ev.target.checked;save();render();});
 render();
 </script>

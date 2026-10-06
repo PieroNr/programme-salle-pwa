@@ -38,6 +38,10 @@ Les séances sont dans le tableau `S` de `index.html`. Chaque exercice : `n` nom
 
 L'onglet Semaine pose 4 questions (match, volley mercredi, volley vendredi, déplacement) et calcule le planning. La fonction `planWeek` de `index.html` teste tous les placements des 4 séances sur les jours libres et garde le mieux noté. Les règles sont les pénalités de la fonction `score` : pas de jambes la veille d'un match, jambes la veille d'un volley fortement pénalisées, pas deux séances du même type deux jours de suite.
 
+## Page Repas
+
+Le contenu (journée type, recettes, liste de courses) est du HTML simple dans la balise `<template id="diet">` de `index.html`. Chaque article de la liste de courses porte un `data-shop` unique, qui sert de clé pour mémoriser les cases cochées.
+
 ## Données
 
 Charges, séries cochées et onglet courant sont stockés dans le `localStorage` du téléphone, sous la clé `salle`. Ils sont liés au domaine : si l'URL change, on repart de zéro.
