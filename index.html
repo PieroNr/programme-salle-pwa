@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a5f8a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Salle">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>:root{color-scheme:light}[hidden]{display:none!important}img{max-width:100%}body{padding-top:env(safe-area-inset-top,0px)}</style>
+<title>Programme Salle Piero</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&display=swap">
+<style>
+/* Layout: une seule colonne pensée pour le téléphone. Onglets collants en haut, exercices en liste numérotée, minuteur de repos fixé en bas. */
+:root{
+  --bg:#eef1f4; --surface:#ffffff; --fg:#131a22; --muted:#56636f; --line:#d3dae1;
+  --accent:#0a5f8a; --accent-fg:#ffffff; --rest:#b4530a; --done:#1f7a4d; --done-bg:#dff1e7;
+  --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1418; --surface:#182026; --fg:#eef2f5; --muted:#9aa8b4; --line:#2b3741;
+  --accent:#62c0ea; --accent-fg:#06202d; --rest:#f0a35a; --done:#5fd19a; --done-bg:#163526; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1418; --surface:#182026; --fg:#eef2f5; --muted:#9aa8b4; --line:#2b3741;
+  --accent:#62c0ea; --accent-fg:#06202d; --rest:#f0a35a; --done:#5fd19a; --done-bg:#163526; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.4;margin:0}
+.wrap{max-width:640px;margin:0 auto;padding-inline:16px;padding-block:0 140px;display:flex;flex-direction:column;gap:18px}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:10px 8px;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid var(--line)}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.tabs button{font:700 19px/1 var(--display);letter-spacing:.02em;text-transform:uppercase;padding:13px 2px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--fg);cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--rest);outline-offset:2px}
+.mode{display:flex;align-items:center;gap:10px;font-size:15px;color:var(--muted)}
+.mode input{width:22px;height:22px;accent-color:var(--accent);flex:none}
+h1{font:700 40px/1 var(--display);text-transform:uppercase;letter-spacing:.01em;margin:0;text-wrap:balance}
+.meta{color:var(--muted);font-size:16px;margin:4px 0 0}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
+.box h2{font:700 15px/1 var(--display);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.box ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.warn{border-color:var(--rest)}
+ol.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.ex{display:grid;grid-template-columns:38px minmax(0,1fr);gap:8px;padding-block:18px;border-top:1px solid var(--line)}
+.ex:first-child{border-top:0}
+.num{font:700 30px/1 var(--display);color:var(--accent)}
+.ex h3{margin:0}
+.ttl{display:block;width:100%;text-align:left;padding:0;border:0;background:none;color:inherit;cursor:pointer;font:700 27px/1.05 var(--display);text-transform:uppercase;text-wrap:balance}
+.ttl small{display:block;margin-top:5px;font:600 14px/1 var(--body);text-transform:none;color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+.dose{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px;margin:8px 0 0;font-variant-numeric:tabular-nums}
+.dose b{font:700 34px/1 var(--display)}
+.dose span{font-size:16px;color:var(--muted)}
+.dose .rest{color:var(--rest);font-weight:600}
+.cue{margin:8px 0 0;font-size:16px}
+.alt{margin:8px 0 0;font-size:16px;color:var(--muted)}
+.alt b,.link b{font:700 14px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;margin-right:6px}
+.link{margin:8px 0 0;font-size:16px;color:var(--rest);font-weight:600}
+.fig{margin:12px 0 0;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.fig .pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fig figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:2px}
+.fig img{width:100%;height:auto;display:block;border-radius:6px;background:var(--line)}
+.fig figcaption{font:700 14px/1 var(--display);letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.fig p{margin:0;font-size:14px;color:var(--muted)}
+.fig a{color:var(--accent);font-weight:600;font-size:16px}
+.kg{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:12px}
+.kg button{height:48px;min-width:48px;padding:0 12px;border-radius:8px;border:2px solid var(--line);background:var(--surface);color:var(--fg);font:700 20px/1 var(--display);cursor:pointer}
+.kg button.up{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.kg input{width:92px;height:48px;border-radius:8px;border:2px solid var(--line);background:var(--surface);color:var(--fg);font:700 26px/1 var(--display);text-align:center;font-variant-numeric:tabular-nums}
+.kg .u{font-size:15px;color:var(--muted)}
+.sets{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.sets button{width:58px;height:52px;border-radius:8px;border:2px solid var(--line);background:var(--surface);color:var(--fg);font:700 24px/1 var(--display);cursor:pointer}
+.sets button[aria-pressed="true"]{background:var(--done-bg);border-color:var(--done);color:var(--done)}
+.ex.finished .ttl,.ex.finished .num{color:var(--muted)}
+.foot{display:flex;flex-direction:column;gap:12px}
+.reset{align-self:flex-start;font:600 16px var(--body);padding:12px 16px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.timer{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--fg);color:var(--bg);padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px))}
+.timer .in{max-width:640px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.timer .t{font:700 52px/1 var(--display);font-variant-numeric:tabular-nums;min-width:112px}
+.timer .l{flex:1;min-width:0;font-size:15px;line-height:1.25}
+.timer .l b{display:block;font:700 13px/1.2 var(--display);letter-spacing:.09em;text-transform:uppercase;opacity:.75}
+.timer button{font:700 17px/1 var(--display);text-transform:uppercase;padding:14px 10px;border-radius:6px;border:1px solid var(--bg);background:transparent;color:var(--bg);cursor:pointer}
+.timer.go{background:var(--done);color:var(--surface)}
+.timer.go button{border-color:var(--surface);color:var(--surface)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <div class="tabs" role="tablist" id="tabs"></div>
+    <label class="mode"><input type="checkbox" id="debut"> <span>Mode découverte (semaines 1 et 2): 2 séries, charges légères</span></label>
+  </header>
+  <main id="main"></main>
+</div>
+<div class="timer" id="timer" hidden>
+  <div class="in">
+    <div class="t" id="tt">0:00</div>
+    <div class="l"><b id="tk">Repos</b><span id="tl"></span></div>
+    <button type="button" id="plus">+30 s</button>
+    <button type="button" id="stop">Stop</button>
+  </div>
+</div>
+
+<script>
+function fig(key,name){
+  function im(i,l){return '<figure><img src="img/'+key+'-'+i+'.jpg" alt="'+l+', '+esc(name)+'" loading="lazy" width="440" height="293"><figcaption>'+l+'</figcaption></figure>';}
+  return '<div class="pair">'+im(0,"Départ")+im(1,"Arrivée")+'</div>';
+}
+function yt(q){return "https://www.youtube.com/results?search_query="+encodeURIComponent(q+" exécution musculation");}
+
+var WU_HAUT=["3 à 4 min de rameur ou de vélo, tranquille","15 rotations externes à la poulie par bras, léger","15 face pulls à la corde, léger"];
+var WU_BAS=["3 à 4 min de vélo, tranquille","10 squats au poids du corps","10 ponts fessiers au sol"];
+var S=[
+{id:"ja",tab:"Jambes A",title:"Jambes A · Quadriceps",day:"Lundi (semaine avec volley le mercredi) ou mardi",dur:"60 min",wu:WU_BAS,ex:[
+ {d:"hack",n:"Hack squat",s:3,r:"6-10",rir:"2",rest:150,cue:"Pieds au milieu du plateau. Descends lentement, cuisses sous l'horizontale, dos collé au dossier.",alt:"Presse à cuisses, pieds au milieu. Sinon goblet squat avec un haltère, talons sur une cale."},
+ {d:"rdl",db:1,n:"Soulevé de terre roumain haltères",s:3,r:"8-10",rir:"2",rest:150,cue:"Pousse les fesses vers l'arrière, dos plat, haltères le long des cuisses. Stoppe quand ça tire derrière les cuisses.",alt:"Même mouvement à la barre."},
+ {d:"legext",n:"Leg extension",s:3,r:"10-15",rir:"1",rest:90,cue:"Axe de la machine en face du genou. Monte, serre 1 s, redescends en 2 à 3 s.",alt:"Fentes arrière haltères, 2 séries de 8 à 10 par jambe."},
+ {d:"legcurl",n:"Leg curl assis",s:3,r:"10-15",rir:"1",rest:90,cue:"Cale bien serrée sur les cuisses, buste un peu penché en avant. Retour jambes tendues à chaque rep.",alt:"Leg curl allongé."},
+ {d:"calf",n:"Mollets debout machine",s:3,r:"10-15",rir:"1",rest:90,cue:"Pause de 2 s talons en bas, puis monte le plus haut possible. Pas de rebond.",alt:"Un pied sur une marche, haltère dans la main du même côté."},
+ {d:"crunch",n:"Crunch à la poulie haute",s:3,r:"10-15",rir:"1",rest:60,cue:"À genoux, corde derrière la tête. Enroule le dos, côtes vers le bassin. Les hanches ne bougent pas.",alt:"Relevés de genoux sur la chaise romaine."}
+]},
+{id:"ha",tab:"Haut A",title:"Haut A · Pecs et largeur du dos",day:"Mardi (semaine avec volley le mercredi) ou lundi",dur:"65 à 70 min",wu:WU_HAUT,ex:[
+ {d:"incline",db:1,n:"Développé incliné haltères",s:3,r:"6-10",rir:"2",rest:150,cue:"Banc à 30°, pas plus. Omoplates serrées, coudes à 45° du buste, descends jusqu'à sentir les pecs s'étirer.",alt:"Presse inclinée machine."},
+ {d:"pulldown",n:"Tirage vertical",s:3,r:"8-12",rir:"1 à 2",rest:120,cue:"Cuisses bien calées, poitrine haute. Tire les coudes vers les hanches, bras tendus en haut.",alt:"Tractions assistées à la machine."},
+ {d:"row",n:"Rowing machine poitrine appuyée",s:3,r:"8-12",rir:"1 à 2",rest:120,cue:"Sternum collé au coussin. Tire les coudes vers l'arrière, laisse les épaules partir en avant au retour.",alt:"Rowing haltère un bras, main et genou sur un banc."},
+ {d:"latraise",n:"Élévations latérales poulie",s:4,r:"12-20",rir:"0 à 1",rest:90,cue:"Poulie en bas, câble derrière toi. Monte la main vers l'extérieur jusqu'à hauteur d'épaule, sans élan.",alt:"Élévations latérales haltères."},
+ {d:"fly",n:"Écarté poulie de bas en haut",s:2,r:"12-15",rir:"1",rest:90,cue:"Poulies en bas, bras presque tendus et fixes. Remonte les mains devant le menton.",alt:"Écarté haltères sur banc incliné."},
+ {d:"inclinecurl",db:1,k:"6a",n:"Curl incliné haltères",s:3,r:"8-12",rir:"1",rest:0,link:"Enchaîne tout de suite avec 6b, sans repos.",cue:"Banc à 45-60°, bras qui pendent à la verticale. Tends complètement en bas, coudes immobiles.",alt:"Curl à la poulie basse, dos à la poulie."},
+ {d:"ohtri",k:"6b",n:"Extension triceps au-dessus de la tête",s:3,r:"10-15",rir:"1",rest:90,link:"Repos après celui-ci, puis reprends à 6a.",cue:"Poulie avec corde, dos à la machine. Coudes serrés vers l'avant, descends loin derrière la tête.",alt:"Un haltère tenu à deux mains, derrière la nuque."}
+]},
+{id:"hb",tab:"Haut B",title:"Haut B · Épaisseur du dos et épaules",day:"Jeudi",dur:"65 min",wu:WU_HAUT,warn:"Veille de volley: garde au moins 2 reps en réserve sur la presse et les élévations. Jamais d'échec sur les épaules aujourd'hui.",ex:[
+ {d:"chestpress",n:"Presse pectorale machine",s:3,r:"8-12",rir:"2",rest:150,cue:"Poignées à hauteur du milieu de la poitrine. Omoplates plaquées au dossier, les épaules ne partent pas en avant.",alt:"Développé couché haltères."},
+ {d:"cablerow",n:"Rowing assis à la poulie",s:3,r:"8-12",rir:"1 à 2",rest:120,cue:"Poignée neutre. Buste fixe, tire vers le nombril, laisse les omoplates s'écarter au retour.",alt:"Rowing haltère un bras, main et genou sur un banc."},
+ {d:"onearm",n:"Tirage vertical un bras à la poulie",s:3,r:"10-12",rir:"1",rest:90,cue:"Laisse l'épaule monter en haut, puis tire le coude vers la hanche. Le buste ne tourne pas.",alt:"Pull-over à la poulie haute, bras tendus."},
+ {d:"latraise",n:"Élévations latérales machine",s:3,r:"12-20",rir:"2",rest:90,cue:"Monte jusqu'à hauteur d'épaule, redescends en 2 s. Épaules basses, loin des oreilles.",alt:"Élévations latérales haltères."},
+ {d:"reardelt",n:"Oiseau machine (pec deck inversé)",s:3,r:"12-20",rir:"1",rest:90,cue:"Bras presque tendus. Le mouvement part des épaules, léger et contrôlé.",alt:"Oiseau haltères, poitrine appuyée sur un banc incliné."},
+ {d:"preacher",k:"6a",n:"Curl pupitre",s:3,r:"10-12",rir:"1",rest:0,link:"Enchaîne tout de suite avec 6b, sans repos.",cue:"Aisselles contre le pupitre. Descente lente, presque bras tendus, sans lâcher la charge en bas.",alt:"Curl marteau haltères."},
+ {d:"pushdown",k:"6b",n:"Pushdown triceps à la corde",s:3,r:"10-15",rir:"1",rest:90,link:"Repos après celui-ci, puis reprends à 6a.",cue:"Coudes collés au corps, buste fixe. Tends complètement les bras en bas.",alt:"Un haltère tenu à deux mains, derrière la nuque."}
+]},
+{id:"jb",tab:"Jambes B",title:"Jambes B · Fessiers et ischios",day:"Samedi",dur:"60 min",wu:WU_BAS,ex:[
+ {d:"hipthrust",n:"Hip thrust machine",s:3,r:"8-12",rir:"2",rest:150,cue:"Menton rentré, côtes basses. Serre les fessiers 1 s en haut, sans cambrer le bas du dos.",alt:"Haut du dos sur un banc, haltère posé sur les hanches."},
+ {d:"legcurl",n:"Leg curl assis",s:3,r:"10-15",rir:"1",rest:90,cue:"Cale bien serrée sur les cuisses, buste un peu penché en avant. Retour jambes tendues à chaque rep.",alt:"Leg curl allongé."},
+ {d:"legpress",n:"Presse à cuisses, pieds hauts et écartés",s:3,r:"10-12",rir:"2",rest:150,cue:"Bas du dos collé au dossier. Descends tant que le bassin ne se décolle pas, ne verrouille pas les genoux.",alt:"Goblet squat avec un haltère, talons sur une cale."},
+ {d:"backext",n:"Extension lombaire à 45°",s:2,r:"10-15",rir:"2",rest:90,cue:"Dos légèrement arrondi, ça plie aux hanches. Serre les fessiers en haut, sans cambrer.",alt:"Pull-through à la poulie basse."},
+ {d:"calfpress",n:"Mollets à la presse",s:3,r:"12-15",rir:"1",rest:90,cue:"Avant-pieds en bas du plateau. Pause de 2 s en étirement, puis pousse à fond.",alt:"Un pied sur une marche, haltère dans la main du même côté."},
+ {d:"legraise",n:"Relevés de jambes suspendu",s:3,r:"8-15",rir:"1",rest:60,nokg:1,cue:"Enroule le bassin en haut, redescends lentement. Pas de balancier.",alt:"Crunch à la poulie haute."},
+ {d:"latraise",n:"Élévations latérales poulie",s:3,r:"12-20",rir:"0 à 1",rest:60,cue:"Poulie en bas, câble derrière toi. Monte la main vers l'extérieur jusqu'à hauteur d'épaule, sans élan.",alt:"Élévations latérales haltères."}
+]}];
+
+var today=new Date().toISOString().slice(0,10);
+var st={tab:"ja",debut:false,day:today,done:{},kg:{}},open=null;
+try{var sv=JSON.parse(localStorage.getItem("salle")||"null");if(sv){st.tab=sv.tab||st.tab;st.debut=!!sv.debut;if(sv.kg)st.kg=sv.kg;if(sv.day===today&&sv.done)st.done=sv.done;}}catch(e){}
+function save(){try{localStorage.setItem("salle",JSON.stringify(st));}catch(e){}}
+function esc(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");}
+function mmss(x){x=Math.max(0,Math.ceil(x));return Math.floor(x/60)+":"+("0"+x%60).slice(-2);}
+function cur(){for(var i=0;i<S.length;i++)if(S[i].id===st.tab)return S[i];return S[0];}
+function nsets(e){return st.debut?2:e.s;}
+function stepOf(e){return e.db?2:2.5;}
+function fr(v){return String(v).replace(".",",");}
+
+function render(){
+  if(location.hash==="#schemas"){var g='<div class="grid">';S.forEach(function(s){s.ex.forEach(function(e){g+='<div class="fig"><b>'+esc(e.n)+'</b>'+fig(e.d,e.n)+'</div>';});});document.getElementById("main").innerHTML=g+'</div>';return;}
+  var s=cur(),h="";
+  document.getElementById("tabs").innerHTML=S.map(function(x){return '<button type="button" role="tab" data-tab="'+x.id+'" aria-selected="'+(x.id===s.id)+'">'+esc(x.tab)+'</button>';}).join("");
+  document.getElementById("debut").checked=st.debut;
+  h+='<div><h1>'+esc(s.title)+'</h1><p class="meta">'+esc(s.day)+' · '+esc(s.dur)+'</p></div>';
+  if(s.warn)h+='<div class="box warn">'+esc(s.warn)+'</div>';
+  h+='<div class="box"><h2>Échauffement, 6 à 8 min</h2><ul>'+s.wu.map(function(w){return '<li>'+esc(w)+'</li>';}).join("")+'<li>Sur l\'exercice 1: 10 reps à moitié de ta charge, puis 5 reps aux trois quarts</li></ul></div>';
+  h+='<ol class="list">';
+  s.ex.forEach(function(e,i){
+    var n=nsets(e),key=s.id+"-"+i,d=(st.done[s.id]||{})[i]||0,b="",isOpen=open===key,stp=stepOf(e),v=st.kg[key];
+    for(var k=1;k<=n;k++)b+='<button type="button" data-ex="'+i+'" data-set="'+k+'" aria-pressed="'+(k<=d)+'" aria-label="Série '+k+' de '+esc(e.n)+'">'+k+'</button>';
+    h+='<li class="ex'+(d>=n?' finished':'')+'"><div class="num">'+(e.k||i+1)+'</div><div>'
+     +'<h3><button type="button" class="ttl" data-open="'+key+'" aria-expanded="'+isOpen+'">'+esc(e.n)+'<small>'+(isOpen?'Masquer les photos':'Voir les photos')+'</small></button></h3>'
+     +(isOpen?'<div class="fig">'+fig(e.d,e.n)+'<p>Photos des deux positions. Le matériel peut différer un peu de celui de ta salle. Images: Free Exercise DB, domaine public.</p><a href="'+yt(e.n)+'" target="_blank" rel="noopener">Voir en vidéo</a>'+(e.alt?'<a href="'+yt(e.alt.split(/[.,]/)[0])+'" target="_blank" rel="noopener">Vidéo de l\'alternative</a>':'')+'</div>':'')
+     +'<p class="dose"><b>'+n+' × '+e.r+'</b><span>'+(st.debut?'3 à 4':e.rir)+' reps en réserve</span><span class="rest">'+(e.rest?'repos '+mmss(e.rest):'sans repos')+'</span></p>'
+     +(e.link?'<p class="link"><b>Superset</b>'+esc(e.link)+'</p>':'')
+     +'<p class="cue">'+esc(e.cue)+'</p>'
+     +(e.alt?'<p class="alt"><b>Si occupé</b>'+esc(e.alt)+'</p>':'')
+     +(e.nokg?'':'<div class="kg"><button type="button" data-kg="-1" data-ex="'+i+'" aria-label="Baisser de '+fr(stp)+' kg">−</button><input type="number" inputmode="decimal" min="0" step="0.5" id="kg-'+key+'" data-kgin="'+i+'" value="'+(v!=null?v:'')+'" placeholder="0" aria-label="Charge pour '+esc(e.n)+', en kg"><span class="u">'+(e.db?'kg par haltère':'kg')+'</span><button type="button" class="up" data-kg="1" data-ex="'+i+'">+'+fr(stp)+' kg</button></div>')
+     +'<div class="sets">'+b+'</div></div></li>';
+  });
+  h+='</ol><div class="foot"><div class="box"><h2>Pour progresser</h2><ul><li>Toutes tes séries atteignent le haut de la fourchette: appuie sur le bouton bleu pour monter d\'un cran la prochaine fois.</li><li>Sinon garde la même charge et vise une rep de plus.</li><li>Si la machine ne propose pas ce cran, tape directement la charge.</li></ul></div><button type="button" class="reset" id="reset">Remettre les séries à zéro</button></div>';
+  document.getElementById("main").innerHTML=h;
+}
+
+var end=0,iv=null;
+function show(sec,label){
+  var t=document.getElementById("timer");t.hidden=false;t.classList.remove("go");
+  document.getElementById("tk").textContent="Repos";document.getElementById("tl").textContent=label;
+  end=Date.now()+sec*1000;tick();clearInterval(iv);iv=setInterval(tick,250);
+  try{if(navigator.wakeLock)navigator.wakeLock.request("screen").catch(function(){});}catch(e){}
+}
+function tick(){
+  var left=(end-Date.now())/1000;
+  if(left<=0){clearInterval(iv);document.getElementById("tt").textContent="GO";document.getElementById("tk").textContent="C'est reparti";document.getElementById("timer").classList.add("go");try{navigator.vibrate&&navigator.vibrate([200,100,200]);}catch(e){}return;}
+  document.getElementById("tt").textContent=mmss(left);
+}
+function hide(){clearInterval(iv);document.getElementById("timer").hidden=true;}
+
+document.addEventListener("click",function(ev){
+  var t=ev.target.closest("button");if(!t)return;
+  if(t.dataset.tab){st.tab=t.dataset.tab;open=null;save();hide();render();window.scrollTo(0,0);return;}
+  if(t.dataset.open){open=open===t.dataset.open?null:t.dataset.open;render();return;}
+  if(t.dataset.kg){
+    var s0=cur(),j=+t.dataset.ex,key=s0.id+"-"+j,nv=Math.max(0,Math.round(((parseFloat(st.kg[key])||0)+(+t.dataset.kg)*stepOf(s0.ex[j]))*100)/100);
+    st.kg[key]=nv;save();var inp=document.getElementById("kg-"+key);if(inp)inp.value=nv;return;}
+  if(t.id==="reset"){st.done[st.tab]={};save();hide();render();return;}
+  if(t.id==="stop"){hide();return;}
+  if(t.id==="plus"){if(end>Date.now()){end+=30000;tick();}else show(30,document.getElementById("tl").textContent);return;}
+  if(t.dataset.set){
+    var s=cur(),i=+t.dataset.ex,k=+t.dataset.set,e=s.ex[i],n=nsets(e);
+    st.done[s.id]=st.done[s.id]||{};
+    var was=st.done[s.id][i]||0,now=(was===k)?k-1:k;
+    st.done[s.id][i]=now;save();render();
+    if(now<=was||e.k==="6a"){hide();return;}
+    var pair=e.k==="6b"?s.ex[i-1]:null,label;
+    if(now<n)label=(pair?"Puis "+pair.n:e.n)+", série "+(now+1)+" sur "+n;
+    else if(s.ex[i+1])label="Suivant: "+s.ex[i+1].n;
+    else{hide();var b=document.getElementById("timer");b.hidden=false;b.classList.add("go");document.getElementById("tt").textContent="FINI";document.getElementById("tk").textContent="Séance terminée";document.getElementById("tl").textContent="Bien joué.";return;}
+    show(e.rest,label);
+  }
+});
+document.addEventListener("input",function(ev){
+  var t=ev.target;if(!t.dataset||t.dataset.kgin==null)return;
+  var key=cur().id+"-"+t.dataset.kgin,v=parseFloat(String(t.value).replace(",","."));
+  if(isNaN(v))delete st.kg[key];else st.kg[key]=Math.max(0,v);save();
+});
+document.getElementById("debut").addEventListener("change",function(ev){st.debut=ev.target.checked;save();render();});
+render();
+</script>
+
+<script>
+if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){});});}
+</script>
+</body>
+</html>
